@@ -1,0 +1,6 @@
+CREATE TABLE People (
+    id SERIAL PRIMARY KEY,
+    FullName VARCHAR(255) NOT NULL,
+    BirthDate DATE NOT NULL,
+    Phone VARCHAR(20) NOT NULL
+);
