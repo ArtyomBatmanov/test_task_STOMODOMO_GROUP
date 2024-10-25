@@ -15,23 +15,21 @@
 
         <div class="content">
 
-            <!-- Выпадающий список с пациентами -->
-            <div class="custom-select-container">
-                <select id="patient-select" class="custom-select">
-                    {% for patient in patients %}
-                        <option value="{{ patient.id }}">{{ patient.name }}</option>
-                    {% endfor %}
-                </select>
-            </div>
+        <div class="custom-select-container">
+            <select id="patient-select" class="custom-select">
+                {% for patient in patients %}
+                    <option value="{{ patient.patient_id }}">{{ patient.patient_fio }}</option>
+                {% endfor %}
+            </select>
+        </div>
 
-            <!-- Выпадающий список с локациями клиник -->
-            <div class="custom-select-container mb20">
-                <select id="location-select" class="custom-select">
-                    {% for location in locations %}
-                        <option value="{{ location.value }}">{{ location.name }}</option>
-                    {% endfor %}
-                </select>
-            </div>
+         <div class="custom-select-container mb20">
+            <select id="location-select" class="custom-select">
+                {% for clinic in clinics %}
+                    <option value="{{ clinic.name }}">{{ clinic.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
 
             <!-- Кнопки действий -->
             <div class="buttons">
@@ -46,7 +44,7 @@
                     <span class="account-balance">{{ personal_account }}</span>
                 </div>
                 <div class="account family">
-                    <span class="account-title">Семейный счёт</span>
+                    <span class="account-title">Семейный счёт </span>
                     <span class="account-balance">{{ family_account }}</span>
                 </div>
             </div>
