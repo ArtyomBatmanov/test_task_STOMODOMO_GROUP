@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ренидент</title>
+    <link href="https://fonts.googleapis.com/css2?family=Mitr:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <img src="{{ url_for('static', filename='logo.svg') }}" alt="Логотип">
+        </div>
+
+        <div class="content">
+
+            <!-- Выпадающий список с пациентами -->
+            <div class="custom-select-container">
+                <select id="patient-select" class="custom-select">
+                    {% for patient in patients %}
+                        <option value="{{ patient.id }}">{{ patient.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <!-- Выпадающий список с локациями клиник -->
+            <div class="custom-select-container mb20">
+                <select id="location-select" class="custom-select">
+                    {% for location in locations %}
+                        <option value="{{ location.value }}">{{ location.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <!-- Кнопки действий -->
+            <div class="buttons">
+                <button class="inactive" onclick="showPopup();">Заказать звонок</button>
+                <button class="active" onclick="Telegram.WebApp.showAlert('Справка заказана');">Заказать справку</button>
+            </div>
+
+            <!-- Счета пациента -->
+            <div class="accounts">
+                <div class="account personal">
+                    <span class="account-title">Личный счёт</span>
+                    <span class="account-balance">{{ personal_account }}</span>
+                </div>
+                <div class="account family">
+                    <span class="account-title">Семейный счёт</span>
+                    <span class="account-balance">{{ family_account }}</span>
+                </div>
+            </div>
+
+            <!-- Будущие приёмы -->
+            <div class="appointments">
+                <div class="upcoming">
+                    <h3>Будущие приёмы</h3>
+                    {% if future_appointments %}
+                        {% for appointment in future_appointments %}
+                        <div class="appointment_next">
+                            <div>
+                                <div>{{ appointment.date }} ({{ appointment.day_of_week }}) {{ appointment.time }}</div>
+                                <div>Врач: {{ appointment.doctor }}</div>
+                            </div>
+                            <div>{{ appointment.days_until }} дней</div>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <p>Нет запланированных приёмов.</p>
+                    {% endif %}
+                </div>
+
+                <!-- Завершённые приёмы -->
+                <div class="past">
+                    <h3>Завершённые приёмы</h3>
+                    {% if past_appointments %}
+                        {% for appointment in past_appointments %}
+                        <div class="appointment_past">
+                            <div>
+                                <div>{{ appointment.date }} ({{ appointment.day_of_week }}) {{ appointment.time }}</div>
+                                <div>Врач: {{ appointment.doctor }}</div>
+                            </div>
+                            <div>{{ appointment.days_since }} дней назад</div>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <p>Нет завершённых приёмов.</p>
+                    {% endif %}
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Подключение скриптов Telegram WebApp API -->
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script>
+        // Инициализация Telegram WebApp
+        Telegram.WebApp.ready();
+
+        // Событие изменения темы интерфейса
+        Telegram.WebApp.onEvent('themeChanged', function() {
+            document.documentElement.className = Telegram.WebApp.colorScheme;
+        });
+
+        // Отображение главной кнопки
+        Telegram.WebApp.MainButton.setParams({
+            text: 'Выход'
+        });
+        Telegram.WebApp.MainButton.onClick(function () {
+            Telegram.WebApp.close();
+        });
+        Telegram.WebApp.MainButton.show();
+
+        // Показ всплывающего окна
+        function showPopup() {
+            Telegram.WebApp.showPopup({
+                title: 'Заказать звонок',
+                message: 'Администратор клиники перезвонит вам в течение 5 минут',
+                buttons: [
+                    {id: 'link', type: 'default', text: 'Перезвоните мне'},
+                    {type: 'cancel', text: 'Отмена'}
+                ]
+            });
+        };
+
+        // Изменение заголовка цвета
+        Telegram.WebApp.setHeaderColor('secondary_bg_color');
+
+        // Обновление данных в зависимости от высоты вьюпорта
+        function setViewportData() {
+            var sizeEl = document.getElementById('viewport-params-size');
+            sizeEl.innerText = 'width: ' + window.innerWidth + ' x ' +
+                'height: ' + Telegram.WebApp.viewportStableHeight;
+
+            var expandEl = document.querySelector('#viewport-params-expand');
+            expandEl.innerText = 'Is Expanded: ' + (Telegram.WebApp.isExpanded ? 'true' : 'false');
+        }
+
+        setViewportData();
+        Telegram.WebApp.onEvent('viewportChanged', setViewportData);
+
+        // Изменение темы при изменении в приложении Telegram
+        Telegram.WebApp.onEvent('themeChanged', function() {
+            document.body.setAttribute('style', '--bg-color:' + Telegram.WebApp.backgroundColor);
+        });
+    </script>
+</body>
+</html>
