@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Статичный QR-код</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Статичный QR-код с изменяемой ссылкой</h1>
+
+        <!-- Текущая ссылка -->
+        <p>Текущая ссылка: <a href="{{ current_url }}" target="_blank">{{ current_url }}</a></p>
+
+        <!-- Изображение QR-кода -->
+        <img src="{{ url_for('static', filename='qr_code.png') }}" alt="QR Code">
+
+        <!-- Форма для ввода новой ссылки -->
+        <form method="POST">
+            <label for="new_url">Введите новую ссылку:</label>
+            <input type="url" id="new_url" name="new_url" placeholder="https://example.com" required>
+            <button type="submit">Обновить ссылку</button>
+        </form>
+    </div>
+</body>
+</html>
