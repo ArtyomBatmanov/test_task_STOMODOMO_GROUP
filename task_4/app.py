@@ -8,7 +8,6 @@ default_url = "https://renident.ru/"
 current_url = default_url
 
 
-# Функция для создания QR-кода
 def generate_qr_code(url):
     qr = qrcode.make(url)
     qr.save(os.path.join('static', 'qr_code.png'))
@@ -17,7 +16,6 @@ def generate_qr_code(url):
 generate_qr_code(current_url)
 
 
-# Главная страница с QR-кодом
 @app.route('/', methods=['GET', 'POST'])
 def qr_code_page():
     global current_url
